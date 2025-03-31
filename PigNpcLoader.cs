@@ -88,10 +88,12 @@ public class PigNpcLoader : Plugin
                 level = levelLoaded;
             }
 
+            Log.Warn($"Trying to get the skin for NPC {data.NameTag}");
             var skinName = Path.GetFileNameWithoutExtension(data.GeometryJsonName);
             var texturePath = Path.Combine(folder, $"{skinName}.png");
             var geometryPath = Path.Combine(folder, $"{skinName}.json");
             var knownPosition = new PlayerLocation(data.X, data.Y, data.Z, data.HeadYaw, data.Yaw, data.Pitch);
+            Log.Warn("skinName: " + skinName + " texturePath: " + texturePath + " geometryPath: " + geometryPath);
             
             CustomNpc npc;
 
@@ -104,12 +106,15 @@ public class PigNpcLoader : Plugin
                 };
                 if (data.SkinType == SkinType.PersistantSkin)
                 {
+                    Log.Warn("Skin file not found, trying to use saved skin");
                     npc.Skin = data.Skin;
                     skinBytes = npc.Skin!.Data;
                 }
+                else Log.Warn("PlayerSkin type detected - no skin needed");
             }
             else
             {
+                Log.Warn("Skin file found, trying to apply it...");
                 skinBytes = Skin.GetTextureFromFile(texturePath);
                 npc = new CustomNpc(data, data.NameTag, level)
                 {

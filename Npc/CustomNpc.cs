@@ -16,6 +16,7 @@ public class CustomNpc : PlayerMob
     
     public CustomNpc(NpcData data, string name, Level level) : base(name, level)
     {
+        Data = data;
         IsSpawned = false;
         
         var resourcePatch = new SkinResourcePatch() { Geometry = new GeometryIdentifier() {Default = "geometry.humanoid.customSlim" } };
@@ -31,8 +32,8 @@ public class CustomNpc : PlayerMob
 
         ItemInHand = new ItemAir();
 
-        HideNameTag = true;
-        IsAlwaysShowName = false;
+        HideNameTag = data.IsVisible;
+        IsAlwaysShowName = data.IsAlwaysShowName;
 
         HealthManager = new HealthManager(this);
         IsInWater = true;
@@ -43,13 +44,6 @@ public class CustomNpc : PlayerMob
         if (EntityId == -1)
         {
             EntityId = DateTime.UtcNow.Ticks;
-        }
-        Data = data;
-
-        if (Data.IsVisible)
-        {
-            //NameTag = "";
-            HideNameTag = true;
         }
 
         NameTag = data.DisplayName;

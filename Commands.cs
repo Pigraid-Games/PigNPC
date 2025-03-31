@@ -85,6 +85,22 @@ public class Commands
         commander.SendMessage(sb.ToString().TrimEnd());
     }
 
+    [Command(Name = "npc setup", Description = "Opens the npc setup menu for a given npc")]
+    [Authorize(Permission = 4)]
+    public void NpcSetup(Player commander, string name)
+    {
+        var npc = PigNpcLoader.GetAll()
+            .FirstOrDefault(n => n.Data.NameTag.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+
+        if (npc == null)
+        {
+            commander.SendMessage($"§cNo NPC found with name '{name}'");
+            return;
+        }
+        
+        Forms.ShowForm(commander, npc);
+    }
+
     [Command(Name = "npc create", Description = "Create a npc and spawn it in the world - using your skin")]
     [Authorize(Permission = 4)]
     public void NpcCreate(Player commander, string name, string displayName, PigNpcLoader.SkinType skinType)
@@ -393,7 +409,7 @@ public class Commands
 
     [Command(Name = "npc reload", Description = "Update the internal data of the plugin with the database")]
     [Authorize(Permission = 4)]
-    public async void NpcReload(Player commander)
+    public static async void NpcReload(Player commander)
     {
         // Despawn & clear current NPCs
         foreach (var npc in PigNpcLoader.GetAll())
