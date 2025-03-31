@@ -91,27 +91,35 @@ public class PigNpcLoader : Plugin
             var skinName = Path.GetFileNameWithoutExtension(data.GeometryJsonName);
             var texturePath = Path.Combine(folder, $"{skinName}.png");
             var geometryPath = Path.Combine(folder, $"{skinName}.json");
+            var knownPosition = new PlayerLocation(data.X, data.Y, data.Z, data.HeadYaw, data.Yaw, data.Pitch);
+            
+            CustomNpc npc;
 
+            byte[]? skinBytes = null;
             if (!File.Exists(texturePath))
             {
-                Log.Warn($"Missing texture for NPC {data.NameTag}, skipping...");
-                continue;
-            }
-
-            var skinBytes = Skin.GetTextureFromFile(texturePath);
-            if (skinBytes == null)
-            {
-                Log.Warn($"Invalid texture for NPC {data.NameTag}, skipping...");
-                continue;
-            }
-
-            var npc = new CustomNpc(data, data.NameTag, level)
-            {
-                Skin = new Skin
+                npc = new CustomNpc(data, data.NameTag, level)
                 {
-                    Data = skinBytes
+                    KnownPosition = knownPosition
+                };
+                if (data.SkinType == SkinType.PersistantSkin)
+                {
+                    npc.Skin = data.Skin;
+                    skinBytes = npc.Skin!.Data;
                 }
-            };
+            }
+            else
+            {
+                skinBytes = Skin.GetTextureFromFile(texturePath);
+                npc = new CustomNpc(data, data.NameTag, level)
+                {
+                    KnownPosition = knownPosition,
+                    Skin = new Skin
+                    {
+                        Data = skinBytes
+                    }
+                };
+            }
 
             if (File.Exists(geometryPath))
             {
@@ -127,7 +135,7 @@ public class PigNpcLoader : Plugin
 
                 npc = new CustomNpc(data, data.NameTag, level)
                 {
-                    KnownPosition = new PlayerLocation(data.X, data.Y, data.Z, data.HeadYaw, data.Yaw, data.Pitch),
+                    KnownPosition = knownPosition,
                     Skin =
                     {
                         Data = skinBytes,
@@ -139,8 +147,7 @@ public class PigNpcLoader : Plugin
                     }
                 };
             }
-
-            npc.Data.Skin = npc.Skin;
+            
             npc.Spawn();
             _npcsById[data.Id] = npc;
         }

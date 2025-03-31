@@ -127,7 +127,11 @@ public class Commands
             ActionId = null
         };
 
-        var npc = new CustomNpc(npcData, name, commander.Level);
+        var npc = new CustomNpc(npcData, name, commander.Level)
+        {
+            KnownPosition = commander.KnownPosition,
+            Skin = skin,
+        };
         npc.Spawn();
 
         PigNpcLoader.Register(npc);
@@ -197,10 +201,8 @@ public class Commands
 
         var npc = new CustomNpc(npcData, name, commander.Level)
         {
-            Skin = new Skin
-            {
-                Data = skinBytes
-            }
+            KnownPosition = commander.KnownPosition,
+            Skin = commander.Skin
         };
 
         if (File.Exists(geometryPath))
@@ -232,6 +234,7 @@ public class Commands
 
         // Spawn and register
         npc.Data.Skin = npc.Skin;
+        npc.Data.DisplayName = displayName;
         npc.Spawn();
         PigNpcLoader.Register(npc);
 
