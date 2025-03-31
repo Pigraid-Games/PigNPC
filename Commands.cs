@@ -124,7 +124,8 @@ public class Commands
             SkinType = skinType,
             IsVisible = true,
             IsAlwaysShowName = false,
-            ActionId = null
+            ActionId = null,
+            DisplayName = displayName
         };
 
         var npc = new CustomNpc(npcData, name, commander.Level)
