@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Text;
 using log4net;
 using PigNet;
 using PigNet.Plugins;
@@ -12,7 +11,7 @@ using PigNPC.Npc;
 namespace PigNPC;
 
 [Plugin(PluginName = "PigNPC",
-    PluginVersion = "ALPHA-20241027",
+    PluginVersion = "1.0.0-RELEASE",
     Description = "PigNPC is a plugin that allows you to create NPCs in Minecraft",
     Author = "Antoine LANGEVIN")]
 public class PigNpcLoader : Plugin
