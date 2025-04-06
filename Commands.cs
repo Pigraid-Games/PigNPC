@@ -436,7 +436,7 @@ public class Commands
         if (internalField?.GetValue(null) is Dictionary<string, CustomNpc> npcsById)
             npcsById.Clear();
 
-        await PigNpcLoader.LoadAllNpcsAsync();
+        await PigNpcLoader.LoadAllNpcsAsync(commander.Level);
         commander.SendMessage("§aNPCs have been reloaded from the database");
     }
 

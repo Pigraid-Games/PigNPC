@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
 using log4net;
-using PigNet;
 using PigNet.Plugins;
 using PigNet.Plugins.Attributes;
 using PigNet.Utils.Skins;
 using PigNet.Utils.Vectors;
+using PigNet.Worlds;
 using PigNPC.Database;
 using PigNPC.Npc;
 
@@ -18,7 +18,6 @@ public class PigNpcLoader : Plugin
 {
     private static readonly Dictionary<string, CustomNpc> _npcsById = new();
     private static INpcStorageProvider _storageProvider = null!;
-    private static LevelManager _levelManager = null!;
     
     private static readonly ILog Log = LogManager.GetLogger(typeof(PigNpcLoader));
 
@@ -42,9 +41,14 @@ public class PigNpcLoader : Plugin
             return;
         }
         _storageProvider = NpcStorageFactory.Create(DatabaseJson, folder + DbFolder);
-        _levelManager = Context.LevelManager;
         
         Context.Server.PluginManager.LoadCommands(new Commands());
+
+        Context.LevelManager.LevelCreated += async (_, args) =>
+        {
+            var level = args.Level;
+            await LoadAllNpcsAsync(level).ConfigureAwait(false);
+        };
 
         Context.Server.PlayerFactory.PlayerCreated += (_, args) =>
         {
@@ -62,32 +66,16 @@ public class PigNpcLoader : Plugin
                 NpcActionRegistry.ExecuteAction(npc.Data.ActionId, npc, player);
             };
         };
-        
-        LoadAllNpcsAsync().GetAwaiter().GetResult();
     }
 
-    public static async Task LoadAllNpcsAsync()
+    public static async Task LoadAllNpcsAsync(Level level)
     {
         var npcs = await _storageProvider.LoadAllAsync();
         var folder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".", "npc_skins");
 
         foreach (var data in npcs)
         {
-            var level = _levelManager.Levels.FirstOrDefault(l => l.LevelName.Equals(data.LevelName));
-            if (level == null)
-            {
-                Log.Debug("Trying to load the level of the NPC...");
-                var levelLoaded = _levelManager.GetLevel(data.LevelName);
-                if (levelLoaded == null)
-                {
-                    Log.Debug("Couldn't find the level for this NPC, skipping it");
-                    continue;
-                }
-
-                levelLoaded.Initialize();
-                level = levelLoaded;
-            }
-
+            if (!level.LevelName.Equals(data.LevelName, StringComparison.InvariantCultureIgnoreCase)) continue;
             Log.Warn($"Trying to get the skin for NPC {data.NameTag}");
             var skinName = Path.GetFileNameWithoutExtension(data.GeometryJsonName);
             var texturePath = Path.Combine(folder, $"{skinName}.png");

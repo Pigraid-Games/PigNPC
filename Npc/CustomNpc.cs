@@ -60,10 +60,13 @@ public class CustomNpc : PlayerMob
         else
         {
             LogManager.GetLogger(GetType()).Warn($"PlayerSkin detected for {NameTag}");
-            foreach (var player in Level.GetAllPlayers())
+            Task.Delay(TimeSpan.FromSeconds(2)).ContinueWith(_ =>
             {
-                BroadcastPlayerSkin(player);
-            }
+                foreach (var player in Level.GetAllPlayers())
+                {
+                    BroadcastPlayerSkin(player);
+                }
+            });
         }
     }
 
