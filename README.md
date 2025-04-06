@@ -43,6 +43,11 @@ Use `/npc help` in-game for a full list.
 /npc setskin <Name> <SkinName>
 ```
 
+### Scale
+````bash
+/npc scale <Name> <Scale>
+````
+
 ### Movement Commands
 ```bash
 /npc goto <Name>

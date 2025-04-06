@@ -319,6 +319,23 @@ public class Commands
         commander.SendMessage($"§aYou have updated the position of the npc '{name}' successfully");
     }
 
+    [Command(Name = "npc scale", Description = "Set the scale of an npc")]
+    [Authorize(Permission = 4)]
+    public async void NpcScale(Player commander, string name, float scale)
+    {
+        var npc = PigNpcLoader.GetAll()
+            .FirstOrDefault(n => n.Data.NameTag.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+
+        if (npc == null)
+        {
+            commander.SendMessage($"§cNo NPC found with name '{name}'");
+            return;
+        }
+        npc.SetScale(scale);
+        npc.Data.Scale = scale;
+        await PigNpcLoader.SaveAllAsync();
+    }
+
     [Command(Name = "npc setskin", Description = "Set the skin of a npc to your skin")]
     [Authorize(Permission = 4)]
     public void NpcSetSkin(Player commander, string name)

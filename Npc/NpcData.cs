@@ -13,6 +13,7 @@ public class NpcData
     public float Pitch { get; set; }
     public float Yaw { get; set; }
     public float HeadYaw { get; set; }
+    public float Scale { get; set; } = 1;
 
     public string GeometryJsonName { get; set; } = string.Empty;
 

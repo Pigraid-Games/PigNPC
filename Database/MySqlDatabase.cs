@@ -34,6 +34,7 @@ public class MySqlDatabase : INpcStorageProvider
             Pitch FLOAT,
             Yaw FLOAT,
             HeadYaw FLOAT,
+            Scale FLOAT,
             SkinJson LONGTEXT NOT NULL,
             IsVisible BOOLEAN NOT NULL,
             IsAlwaysShowName BOOLEAN NOT NULL,
@@ -91,14 +92,14 @@ public class MySqlDatabase : INpcStorageProvider
             INSERT INTO Npcs (
                 Id, NameTag, LevelName, X, Y, Z,
                 Pitch, Yaw, HeadYaw,
-                SkinJson,
+                Scale, SkinJson,
                 IsVisible, IsAlwaysShowName, ActionId,
                 SkinType, DisplayName
             )
             VALUES (
                 @Id, @NameTag, @LevelName, @X, @Y, @Z,
                 @Pitch, @Yaw, @HeadYaw,
-                @SkinJson,
+                @Scale, @SkinJson,
                 @IsVisible, @IsAlwaysShowName, @ActionId,
                 @SkinType, @DisplayName
             )
@@ -111,6 +112,7 @@ public class MySqlDatabase : INpcStorageProvider
                 Pitch = VALUES(Pitch),
                 Yaw = VALUES(Yaw),
                 HeadYaw = VALUES(HeadYaw),
+                Scale = VALUES(Scale),
                 SkinJson = VALUES(SkinJson),
                 IsVisible = VALUES(IsVisible),
                 IsAlwaysShowName = VALUES(IsAlwaysShowName),
@@ -152,14 +154,14 @@ public class MySqlDatabase : INpcStorageProvider
                 INSERT INTO Npcs (
                     Id, NameTag, LevelName, X, Y, Z,
                     Pitch, Yaw, HeadYaw,
-                    SkinJson,
+                    Scale, SkinJson,
                     IsVisible, IsAlwaysShowName, ActionId,
                     SkinType, DisplayName
                 )
                 VALUES (
                     @Id, @NameTag, @LevelName, @X, @Y, @Z,
                     @Pitch, @Yaw, @HeadYaw,
-                    @SkinJson,
+                    @Scale, @SkinJson,
                     @IsVisible, @IsAlwaysShowName, @ActionId,
                     @SkinType, @DisplayName
                 )
@@ -172,6 +174,7 @@ public class MySqlDatabase : INpcStorageProvider
                     Pitch = VALUES(Pitch),
                     Yaw = VALUES(Yaw),
                     HeadYaw = VALUES(HeadYaw),
+                    Scale = VALUES(Scale),
                     SkinJson = VALUES(SkinJson),
                     IsVisible = VALUES(IsVisible),
                     IsAlwaysShowName = VALUES(IsAlwaysShowName),
@@ -201,12 +204,13 @@ public class MySqlDatabase : INpcStorageProvider
             Pitch = reader.GetFloat(6),
             Yaw = reader.GetFloat(7),
             HeadYaw = reader.GetFloat(8),
-            Skin = Skin.FromJson(reader.GetString(9)),
-            IsVisible = reader.GetBoolean(10),
-            IsAlwaysShowName = reader.GetBoolean(11),
-            ActionId = reader.IsDBNull(12) ? null : reader.GetString(12),
-            SkinType = (PigNpcLoader.SkinType)reader.GetInt16(13),
-            DisplayName = reader.GetString(14)
+            Scale = reader.GetFloat(9),
+            Skin = Skin.FromJson(reader.GetString(10)),
+            IsVisible = reader.GetBoolean(11),
+            IsAlwaysShowName = reader.GetBoolean(12),
+            ActionId = reader.IsDBNull(13) ? null : reader.GetString(13),
+            SkinType = (PigNpcLoader.SkinType)reader.GetInt16(14),
+            DisplayName = reader.GetString(15)
         };
     }
 
@@ -221,6 +225,7 @@ public class MySqlDatabase : INpcStorageProvider
         command.Parameters.AddWithValue("@Pitch", npc.Pitch);
         command.Parameters.AddWithValue("@Yaw", npc.Yaw);
         command.Parameters.AddWithValue("@HeadYaw", npc.HeadYaw);
+        command.Parameters.AddWithValue("@Scale", npc.Scale);
         command.Parameters.AddWithValue("@SkinJson", JsonConvert.SerializeObject(npc.Skin));
         command.Parameters.AddWithValue("@IsVisible", npc.IsVisible);
         command.Parameters.AddWithValue("@IsAlwaysShowName", npc.IsAlwaysShowName);

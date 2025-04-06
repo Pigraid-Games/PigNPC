@@ -31,6 +31,7 @@ public class CustomNpc : PlayerMob
         };
 
         ItemInHand = new ItemAir();
+        Scale = data.Scale;
 
         HideNameTag = data.IsVisible;
         IsAlwaysShowName = data.IsAlwaysShowName;

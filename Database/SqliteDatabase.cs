@@ -41,6 +41,7 @@ public class SqliteDatabase : INpcStorageProvider
             Pitch REAL,
             Yaw REAL,
             HeadYaw REAL,
+            Scale REAL,
             SkinJson TEXT NOT NULL,
             IsVisible INTEGER NOT NULL,
             IsAlwaysShowName INTEGER NOT NULL,
@@ -97,11 +98,11 @@ public class SqliteDatabase : INpcStorageProvider
         """
         INSERT OR REPLACE INTO Npcs
         (Id, NameTag, LevelName, X, Y, Z, Pitch, Yaw, HeadYaw,
-         SkinJson,
+         Scale, SkinJson,
          IsVisible, IsAlwaysShowName, ActionId, SkinType, DisplayName)
         VALUES
         (@Id, @NameTag, @LevelName, @X, @Y, @Z, @Pitch, @Yaw, @HeadYaw,
-         @SkinJson,
+         @Scale, @SkinJson,
          @IsVisible, @IsAlwaysShowName, @ActionId, @SkinType, @DisplayName);
         """;
 
@@ -134,11 +135,11 @@ public class SqliteDatabase : INpcStorageProvider
             """
             INSERT OR REPLACE INTO Npcs
             (Id, NameTag, LevelName, X, Y, Z, Pitch, Yaw, HeadYaw,
-             SkinJson,
+             Scale, SkinJson,
              IsVisible, IsAlwaysShowName, ActionId, SkinType, DisplayName)
             VALUES
             (@Id, @NameTag, @LevelName, @X, @Y, @Z, @Pitch, @Yaw, @HeadYaw,
-             @SkinJson,
+             @Scale, @SkinJson,
              @IsVisible, @IsAlwaysShowName, @ActionId, @SkinType, @DisplayName);
             """;
 
@@ -162,12 +163,13 @@ public class SqliteDatabase : INpcStorageProvider
             Pitch = (float)reader.GetDouble(6),
             Yaw = (float)reader.GetDouble(7),
             HeadYaw = (float)reader.GetDouble(8),
-            Skin = Skin.FromJson(reader.GetString(9)),
-            IsVisible = reader.GetInt32(10) != 0,
-            IsAlwaysShowName = reader.GetInt32(11) != 0,
-            ActionId = reader.IsDBNull(12) ? null : reader.GetString(12),
-            SkinType = (PigNpcLoader.SkinType)reader.GetInt16(13),
-            DisplayName = reader.GetString(14)
+            Scale = (float)reader.GetDouble(9),
+            Skin = Skin.FromJson(reader.GetString(10)),
+            IsVisible = reader.GetInt32(11) != 0,
+            IsAlwaysShowName = reader.GetInt32(12) != 0,
+            ActionId = reader.IsDBNull(13) ? null : reader.GetString(13),
+            SkinType = (PigNpcLoader.SkinType)reader.GetInt16(14),
+            DisplayName = reader.GetString(15)
         };
     }
 
@@ -182,6 +184,7 @@ public class SqliteDatabase : INpcStorageProvider
         command.Parameters.AddWithValue("@Pitch", npc.Pitch);
         command.Parameters.AddWithValue("@Yaw", npc.Yaw);
         command.Parameters.AddWithValue("@HeadYaw", npc.HeadYaw);
+        command.Parameters.AddWithValue("@Scale", npc.Scale);
         command.Parameters.AddWithValue("@SkinJson", JsonConvert.SerializeObject(npc.Skin));
         command.Parameters.AddWithValue("@IsVisible", npc.IsVisible ? 1 : 0);
         command.Parameters.AddWithValue("@IsAlwaysShowName", npc.IsAlwaysShowName ? 1 : 0);
