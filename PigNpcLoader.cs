@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using log4net;
+using PigNet;
 using PigNet.Plugins;
 using PigNet.Plugins.Attributes;
 using PigNet.Utils.Skins;
@@ -56,7 +57,7 @@ public class PigNpcLoader : Plugin
 
             player.PlayerJoin += (_, _) =>
             {
-                _npcsById.ToList().ForEach(npc => npc.Value.SendSkin([player]));
+                SendNpcDataToPlayer([player]);
             };
 
             player.PlayerDamageToEntity += (_, eventArgs) =>
@@ -66,6 +67,11 @@ public class PigNpcLoader : Plugin
                 NpcActionRegistry.ExecuteAction(npc.Data.ActionId, npc, player);
             };
         };
+    }
+    
+    public static void SendNpcDataToPlayer(Player[] players)
+    {
+        _npcsById.ToList().ForEach(npc => npc.Value.SendSkin(players));
     }
 
     public static async Task LoadAllNpcsAsync(Level level)
